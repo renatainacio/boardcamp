@@ -3,6 +3,7 @@ function validateSchema(schema){
         const {error, value} = schema.validate(req.body, {abortEarly: false});
         if(error)
             return res.status(400).send(error.message);
+        next();
     })
 }
 

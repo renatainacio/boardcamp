@@ -12,6 +12,9 @@ export async function getGames(req, res){
 export async function postGame(req, res){
     try {
         const {name, image, stockTotal, pricePerDay} = req.body;
+        const game = await db.query(`SELECT name FROM games WHERE name='${name}';`);
+        if (game.rows)
+            return res.sendStatus(409);
         await db.query(`INSERT INTO games (name, image, "stockTotal", "pricePerDay") VALUES ($1, $2, $3, $4)`, [name, image, stockTotal, pricePerDay]);
         res.sendStatus(201);
     } catch(err){
