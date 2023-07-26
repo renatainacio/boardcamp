@@ -1,4 +1,7 @@
-import Joi from 'joi';
+import coreJoi from 'joi';
+import joiDate from '@joi/date';
+
+const Joi = coreJoi.extend(joiDate);
 
 export const schemaCustomer = Joi.object({
     name: Joi.string().required(),
