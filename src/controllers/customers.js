@@ -3,6 +3,12 @@ import db from "../database/connection.js";
 export async function getCustomers(req, res){
     try {
         const customers = await db.query(`SELECT * FROM customers;`);
+        if (customers.rows.length)
+        {
+            customers.rows.forEach(c => {
+                const d = new Date(c.birthday);
+                c.birthday = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`});
+        }
         res.status(201).send(customers.rows);
     } catch (err) {
         res.status(500).send(err.message);
