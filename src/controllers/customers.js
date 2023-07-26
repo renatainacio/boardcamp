@@ -10,7 +10,6 @@ export async function getCustomers(req, res){
 }
 
 export async function getCustomerById(req, res){
-    const { id } = req.params;
     res.sendStatus(201);
 }
 
