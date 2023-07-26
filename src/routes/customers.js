@@ -5,7 +5,7 @@ const customerRouter = Router();
 
 customerRouter.get("/customers", getCustomers);
 
-customerRouter.get("/customers:id", getCustomerById);
+customerRouter.get("/customers/:id", getCustomerById);
 
 customerRouter.post("/customers", postCustomer);
 
