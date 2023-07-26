@@ -7,7 +7,7 @@ export async function getCustomers(req, res){
         {
             customers.rows.forEach(c => {
                 const d = new Date(c.birthday);
-                c.birthday = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`});
+                c.birthday = `${d.getFullYear()}-${d.getMonth()<9 ? '0' : ''}${d.getMonth()+1}-${d.getDate()<10 ? '0' : ''}${d.getDate()}${d.getDate()}`});
         }
         res.status(201).send(customers.rows);
     } catch (err) {
@@ -22,7 +22,7 @@ export async function getCustomerById(req, res){
         if (customer.rows.length === 0)
             return res.sendStatus(404);
         const d = new Date(customer.rows[0].birthday);
-        customer.rows[0].birthday = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+        customer.rows[0].birthday = `${d.getFullYear()}-${d.getMonth()<9 ? '0' : ''}${d.getMonth()+1}-${d.getDate() < 10 ? '0' : ''}${d.getDate()}`;
         res.status(201).send(customer.rows[0]);
     } catch(err) {
         res.status(500).send(err.message);
