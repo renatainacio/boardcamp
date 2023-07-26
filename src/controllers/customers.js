@@ -21,6 +21,8 @@ export async function getCustomerById(req, res){
         const customer = await db.query(`SELECT * FROM customers WHERE id=$1;`, [id]);
         if (customer.rows.length === 0)
             return res.sendStatus(404);
+        const d = new Date(customer.rows[0].birthday);
+        customer.rows[0].birthday = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
         res.status(201).send(customer.rows[0]);
     } catch(err) {
         res.status(500).send(err.message);
