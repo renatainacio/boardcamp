@@ -7,7 +7,7 @@ export async function getCustomers(req, res){
         {
             customers.rows.forEach(c => {
                 const d = new Date(c.birthday);
-                c.birthday = `${d.getFullYear()}-${d.getMonth()<9 ? '0' : ''}${d.getMonth()+1}-${d.getDate()<10 ? '0' : ''}${d.getDate()}${d.getDate()}`});
+                c.birthday = `${d.getFullYear()}-${d.getMonth()<9 ? '0' : ''}${d.getMonth()+1}-${d.getDate()<10 ? '0' : ''}${d.getDate()}`});
         }
         res.status(201).send(customers.rows);
     } catch (err) {
