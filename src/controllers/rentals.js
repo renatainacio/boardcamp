@@ -3,7 +3,7 @@ import db from "../database/connection.js";
 export async function getRentals(req, res){
     try{
         const rentals = await db.query(`
-            SELECT rentals.*, customers.id AS "customerId", customers.name AS "customerName", games.id AS "gameId", games.name AS "gameName"
+            SELECT rentals.*, customers.name AS "customerName", games.name AS "gameName"
             FROM rentals
             JOIN customers
             ON customers.id=rentals."customerId"
@@ -23,9 +23,7 @@ export async function getRentals(req, res){
                     id: c.customerId,
                     name: c.customerName
                 }
-                delete c.gameId;
                 delete c.gameName;
-                delete c.customerId;
                 delete c.customerName;
             });
         }
