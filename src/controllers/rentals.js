@@ -92,9 +92,10 @@ export async function finishRental(req, res){
             return res.sendStatus(404);
         if (rental.rows[0].returnDate != null)
             return res.sendStatus(400);
-        const rentDate = Date(rental.rows[0].rentDate);
+        const rentDate = new Date(rental.rows[0].rentDate);
         const daysRented = rental.rows[0].daysRented;
-        const actualDays = d - rentDate;
+        const actualDays = Math.floor((d - rentDate) / (1000 * 60 * 60 * 24));
+        console.log("actual days " + actualDays);
         if (actualDays > daysRented)
             delayFee = rental.rows[0].originalPrice / daysRented * actualDays;
         await db.query(`
