@@ -15,6 +15,11 @@ export async function getRentals(req, res){
             rentals.rows.forEach(c => {
                 const d = new Date(c.rentDate);
                 c.rentDate = `${d.getFullYear()}-${d.getMonth()<9 ? '0' : ''}${d.getMonth()+1}-${d.getDate()<10 ? '0' : ''}${d.getDate()}`;
+                if(c.returnDate != null)
+                {
+                    const d2 = new Date(c.returnDate);
+                    c.returnDate = `${d2.getFullYear()}-${d2.getMonth()<9 ? '0' : ''}${d2.getMonth()+1}-${d2.getDate()<10 ? '0' : ''}${d2.getDate()}`;
+                }
                 c.game = {
                     id: c.gameId,
                     name: c.gameName
@@ -94,7 +99,7 @@ export async function finishRental(req, res){
             delayFee = rental.rows[0].originalPrice / daysRented * actualDays;
         await db.query(`
             UPDATE rentals
-            SET returnDate=$1, delayFee=$2
+            SET "returnDate"=$1, "delayFee"=$2
             WHERE id=$3
         `, [returnDate, delayFee, id]);
         res.sendStatus(200);
@@ -107,7 +112,7 @@ export async function deleteRental(req, res){
     const {id} = req.params;
     try{
         const rental = await db.query(`
-        SELECT returnDate
+        SELECT "returnDate"
         FROM rentals
         WHERE id=$1;
         `, [id]);

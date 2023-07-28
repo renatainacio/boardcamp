@@ -9,6 +9,6 @@ rentalRouter.post("/rentals", postRental);
 
 rentalRouter.post("/rentals/:id/return", finishRental);
 
-rentalRouter.delete("/rental/:id", deleteRental);
+rentalRouter.delete("/rentals/:id", deleteRental);
 
 export default rentalRouter;
