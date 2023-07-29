@@ -1,18 +1,37 @@
 import db from "../database/connection.js";
 
 export async function getRentals(req, res){
-    const {customerId, gameId} = req.query;
+    const {customerId, gameId, offset, limit, order, desc} = req.query;
+    let rentals;
+    const values = [];
+    const params = [];
+    if (customerId){
+        values.push(customerId);
+        params.push(`customerId = $${values.length}`);
+    }
+    if (gameId){
+        values.push(gameId);
+        params.push(`customerId = $${values.length}`);
+    }
+    if (params.length)
+        sql += ` WHERE ` + params.join(' AND ');
+    if (limit){
+        values.push(limit);
+        sql += ` LIMIT $${values.length}`;
+    }
+    if (offset){
+        values.push(offset);
+        sql += ` OFFSET $${values.length}`;
+    }
+    if (order){
+        values.push(order);
+        sql += ` ORDER BY $${values.length} ${desc ? 'DESC' : ''}`;
+    }
     try{
-        let query = `${customerId ? `"customerId"=${customerId}` : ''}`;
-        query = `${gameId && customerId ? query+` AND "gameId"=${gameId}` : gameId ? `"gameId"=${gameId}` : query}`;
-        let sqlStatement = `
-        SELECT rentals.*, customers.name AS "customerName", games.name AS "gameName"
-        FROM rentals
-        JOIN customers
-        ON customers.id=rentals."customerId"
-        JOIN games
-        ON games.id=rentals."gameId" ${query ? `WHERE ${query}` : ''};`
-        const rentals = await db.query(sqlStatement);
+        if (values.length)
+            rentals = await db.query(sql, values);
+        else
+            rentals = await db.query(sql);
         if (rentals.rows.length)
         {
             rentals.rows.forEach(c => {

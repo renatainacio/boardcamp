@@ -21,6 +21,7 @@ export async function getGames(req, res){
         values.push(order);
         sql += ` ORDER BY $${values.length} ${desc ? 'DESC' : ''}`;
     }
+    console.log(sql);
     try {
         if (values.length)
             games = await db.query(sql, values);
