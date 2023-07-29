@@ -2,7 +2,14 @@ import db from "../database/connection.js";
 
 export async function getRentals(req, res){
     const {customerId, gameId, offset, limit, order, desc} = req.query;
-    let sql = 'SELECT * FROM rentals';
+    let sql = `
+        SELECT rentals.*, customers.name AS "customerName", games.name AS "gameName"
+        FROM rentals
+        JOIN customers
+        ON customers.id=rentals."customerId"
+        JOIN games
+        ON games.id=rentals."gameId"
+        `;
     let rentals;
     const values = [];
     const params = [];
