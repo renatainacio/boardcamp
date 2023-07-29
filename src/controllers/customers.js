@@ -9,6 +9,9 @@ export async function getCustomers(req, res){
         values.push(`${cpf}%`);
         sql += ` WHERE cpf ILIKE $${values.length}`;
     }
+    if (order){
+        sql += ` ORDER BY ${order} ${desc ? 'DESC' : ''}`;
+    }
     if (limit){
         values.push(limit);
         sql += ` LIMIT $${values.length}`;
@@ -17,11 +20,8 @@ export async function getCustomers(req, res){
         values.push(offset);
         sql += ` OFFSET $${values.length}`;
     }
-    if (order){
-        values.push(order);
-        sql += ` ORDER BY $${values.length} ${desc ? 'DESC' : ''}`;
-    }
     try {
+        console.log(sql);
         if (values.length)
             customers = await db.query(sql, values);
         else

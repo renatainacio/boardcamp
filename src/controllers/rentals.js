@@ -16,6 +16,8 @@ export async function getRentals(req, res){
     }
     if (params.length)
         sql += ` WHERE ` + params.join(' AND ');
+    if (order)
+        sql += ` ORDER BY ${order} ${desc ? 'DESC' : ''}`;
     if (limit){
         values.push(limit);
         sql += ` LIMIT $${values.length}`;
@@ -23,10 +25,6 @@ export async function getRentals(req, res){
     if (offset){
         values.push(offset);
         sql += ` OFFSET $${values.length}`;
-    }
-    if (order){
-        values.push(order);
-        sql += ` ORDER BY $${values.length} ${desc ? 'DESC' : ''}`;
     }
     try{
         if (values.length)
