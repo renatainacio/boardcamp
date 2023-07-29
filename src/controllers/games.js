@@ -10,7 +10,7 @@ export async function getGames(req, res){
         sql += ` WHERE name ILIKE $${values.length}`;
     }
     if (order)
-        sql += ` ORDER BY ${order} ${desc ? 'DESC' : ''}`;
+        sql += ` ORDER BY "${order}" ${desc ? 'DESC' : ''}`;
     if (limit){
         values.push(limit);
         sql += ` LIMIT $${values.length}`;

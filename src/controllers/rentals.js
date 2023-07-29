@@ -1,7 +1,7 @@
 import db from "../database/connection.js";
 
 export async function getRentals(req, res){
-    const {customerId, gameId, offset, limit, order, desc} = req.query;
+    const {customerId, gameId, offset, limit, order, desc, status, startDate} = req.query;
     let sql = `
         SELECT rentals.*, customers.name AS "customerName", games.name AS "gameName"
         FROM rentals
@@ -21,10 +21,20 @@ export async function getRentals(req, res){
         values.push(gameId);
         params.push(`"gameId" = $${values.length}`);
     }
+    if (status){
+        if (status === 'open')
+            params.push(`"returnDate" IS NULL`);
+        else if (status === 'closed')
+            params.push(`"returnDate" IS NOT NULL`);
+    }
+    if (startDate){
+        values.push(startDate);
+        params.push(`"rentDate" >= $${values.length}`);
+    }
     if (params.length)
         sql += ` WHERE ` + params.join(' AND ');
     if (order)
-        sql += ` ORDER BY ${order} ${desc ? 'DESC' : ''}`;
+        sql += ` ORDER BY "${order}" ${desc ? 'DESC' : ''}`;
     if (limit){
         values.push(limit);
         sql += ` LIMIT $${values.length}`;
