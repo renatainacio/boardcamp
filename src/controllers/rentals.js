@@ -2,16 +2,17 @@ import db from "../database/connection.js";
 
 export async function getRentals(req, res){
     const {customerId, gameId, offset, limit, order, desc} = req.query;
+    let sql = 'SELECT * FROM rentals';
     let rentals;
     const values = [];
     const params = [];
     if (customerId){
         values.push(customerId);
-        params.push(`customerId = $${values.length}`);
+        params.push(`"customerId" = $${values.length}`);
     }
     if (gameId){
         values.push(gameId);
-        params.push(`customerId = $${values.length}`);
+        params.push(`"gameId" = $${values.length}`);
     }
     if (params.length)
         sql += ` WHERE ` + params.join(' AND ');

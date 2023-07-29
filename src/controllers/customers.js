@@ -3,6 +3,7 @@ import db from "../database/connection.js";
 export async function getCustomers(req, res){
     const {cpf, offset, limit, order, desc} = req.query;
     let customers;
+    let sql = 'SELECT * FROM customers';
     const values = [];
     if (cpf){
         values.push(`${cpf}%`);
