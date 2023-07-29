@@ -1,16 +1,30 @@
 import db from "../database/connection.js";
 
 export async function getCustomers(req, res){
-    const {cpf} = req.query;
+    const {cpf, offset, limit, order, desc} = req.query;
     let customers;
-    let query = `${cpf}%`
+    const values = [];
+    if (cpf){
+        values.push(`${cpf}%`);
+        sql += ` WHERE cpf ILIKE $${values.length}`;
+    }
+    if (limit){
+        values.push(limit);
+        sql += ` LIMIT $${values.length}`;
+    }
+    if (offset){
+        values.push(offset);
+        sql += ` OFFSET $${values.length}`;
+    }
+    if (order){
+        values.push(order);
+        sql += ` ORDER BY $${values.length} ${desc ? 'DESC' : ''}`;
+    }
     try {
-        if(cpf)
-            customers = await db.query(`SELECT * FROM customers WHERE cpf LIKE $1;`, [query]);
+        if (values.length)
+            customers = await db.query(sql, values);
         else
-            customers = await db.query(`
-                SELECT *
-                FROM customers;`);
+            customers = await db.query(sql);
         if (customers.rows.length)
         {
             customers.rows.forEach(c => {

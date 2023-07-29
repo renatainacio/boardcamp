@@ -3,27 +3,25 @@ import db from "../database/connection.js";
 export async function getGames(req, res){
     let sql = 'SELECT * FROM games';
     let games;
+    const {name, offset, limit, order, desc} = req.query;
+    const values = [];
+    if (name){
+        values.push(`%${name}%`);
+        sql += ` WHERE name ILIKE $${values.length}`;
+    }
+    if (limit){
+        values.push(limit);
+        sql += ` LIMIT $${values.length}`;
+    }
+    if (offset){
+        values.push(offset);
+        sql += ` OFFSET $${values.length}`;
+    }
+    if (order){
+        values.push(order);
+        sql += ` ORDER BY $${values.length} ${desc ? 'DESC' : ''}`;
+    }
     try {
-        const {name, offset, limit, order, desc} = req.query;
-        const params = [];
-        const values = [];
-        if (name){
-            values.push(`%${name}%`);
-            params.push(`name ILIKE $${values.length}`);
-            sql += ' WHERE ' + params[0];
-        }
-        if (limit){
-            values.push(limit);
-            sql += ` LIMIT $${values.length}`;
-        }
-        if (offset){
-            values.push(offset);
-            sql += ` OFFSET $${values.length}`;
-        }
-        if (order){
-            values.push(order);
-            sql += ` ORDER BY $${values.length}`;
-        }
         if (values.length)
             games = await db.query(sql, values);
         else
