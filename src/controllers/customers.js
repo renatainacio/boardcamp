@@ -1,10 +1,16 @@
 import db from "../database/connection.js";
 
 export async function getCustomers(req, res){
+    const {cpf} = req.query;
+    let customers;
+    let query = `${cpf}%`
     try {
-        const customers = await db.query(`
-            SELECT *
-            FROM customers;`);
+        if(cpf)
+            customers = await db.query(`SELECT * FROM customers WHERE cpf LIKE $1;`, [query]);
+        else
+            customers = await db.query(`
+                SELECT *
+                FROM customers;`);
         if (customers.rows.length)
         {
             customers.rows.forEach(c => {

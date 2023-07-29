@@ -2,7 +2,13 @@ import db from "../database/connection.js";
 
 export async function getGames(req, res){
     try {
-        const games = await db.query(`SELECT * FROM games;`);
+        const {name} = req.query;
+        let games;
+        let query = `%${name.toLowerCase()}%`
+        if(name)
+            games = await db.query(`SELECT * FROM games WHERE LOWER(name) LIKE $1;`, [query]);
+        else
+            games = await db.query(`SELECT * FROM games;`);
         res.status(201).send(games.rows);
     } catch (err) {
         res.status(500).send(err.message);
