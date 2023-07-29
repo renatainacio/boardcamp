@@ -1,22 +1,33 @@
 import db from "../database/connection.js";
 
 export async function getGames(req, res){
+    let sql = 'SELECT * FROM games';
+    let games;
     try {
-        const {name, offset, limit} = req.query;
-        // let games;
-        let query;
-        if (name)
-            query = `WHERE LOWER(name) LIKE '%${name.toLowerCase()}%'`
-        const games = await db.query(`
-        SELECT *
-        FROM games
-        ${query ? query : ''}
-        ${limit ? `LIMIT ${limit}` : ''}
-        ${offset ? `OFFSET ${offset}` : ''};`);
-        // if(name)
-        //     games = await db.query(`SELECT * FROM games WHERE LOWER(name) LIKE $1;`, [query]);
-        // else
-        //     games = await db.query(`SELECT * FROM games;`);
+        const {name, offset, limit, order, desc} = req.query;
+        const params = [];
+        const values = [];
+        if (name){
+            values.push(`%${name}%`);
+            params.push(`name ILIKE $${values.length}`);
+            sql += ' WHERE ' + params[0];
+        }
+        if (limit){
+            values.push(limit);
+            sql += ` LIMIT $${values.length}`;
+        }
+        if (offset){
+            values.push(offset);
+            sql += ` OFFSET $${values.length}`;
+        }
+        if (order){
+            values.push(order);
+            sql += ` ORDER BY $${values.length}`;
+        }
+        if (values.length)
+            games = await db.query(sql, values);
+        else
+            games = await db.query(sql);
         res.status(201).send(games.rows);
     } catch (err) {
         res.status(500).send(err.message);
